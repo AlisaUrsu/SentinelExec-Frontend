@@ -17,12 +17,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState } from "react";
 import { columns } from "./columns";
 import { ExecutableSummaryDTO } from "@/responses/executable-summary-dto";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../ui/pagination";
+import { Paginator } from "../paginator";
+import { Separator } from "../ui/separator";
 
 type Props = {
   data: ExecutableSummaryDTO[];
+  totalPages: number;
+  currentPage: number;
+  totalItems: number;
+  onPageChange: (currentPage: number) => void;
 };
 
-export function ExecutablesTable({ data }: Props) {
+export function ExecutablesTable({ data, totalPages, currentPage, totalItems, onPageChange }: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -44,7 +51,8 @@ export function ExecutablesTable({ data }: Props) {
 
   return (
     <div>
-      <div className="flex items-center gap-4 py-4">
+      <div className="flex items-center justify-between  py-4">
+        <div className="flex flex-row gap-4">
         <Input
           placeholder="Filter by name..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -67,6 +75,8 @@ export function ExecutablesTable({ data }: Props) {
             ))}
           </SelectContent>
         </Select>
+        </div>
+        <div className="text-sm font-semibold">Total number of reported files: {totalItems}</div>
       </div>
 
       <Table className="w-full text-sm text-left border-collapse">
@@ -74,7 +84,7 @@ export function ExecutablesTable({ data }: Props) {
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+                <TableHead key={header.id} className="">
                   {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                 </TableHead>
               ))}
@@ -92,6 +102,12 @@ export function ExecutablesTable({ data }: Props) {
           ))}
         </TableBody>
       </Table>
+
+      <Paginator className="flex justify-end mt-8"
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={onPageChange}
+      />
     </div>
   );
 }

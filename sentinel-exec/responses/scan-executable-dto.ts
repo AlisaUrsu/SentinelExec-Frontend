@@ -1,4 +1,6 @@
 export interface ScanExecutableDTO {
     id: number,
-    name: string
+    name: string,
+    fileSize: number,
+    sha256: string
 }

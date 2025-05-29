@@ -40,11 +40,6 @@ export default function NavBar() {
                     </button>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                    <button className="bg-transparent hover:text-primary" onClick={handleAnalyze}>
-                        Scan Files
-                    </button>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
                     <button className="bg-transparent hover:text-primary" onClick={handleExecutables}>
                         Executables
                     </button>

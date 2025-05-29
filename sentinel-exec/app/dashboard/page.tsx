@@ -13,11 +13,16 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Paginator } from "@/components/paginator";
 
 export default function Dashboard(){
     const [user, setUser] = useState<UserDto | null>(null);
   const [scans, setScans] = useState<ScanDTO[]>([]);
+ const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(true);
+  const pageSize = 5;
 
   useEffect(() => {
     async function fetchData() {
@@ -26,13 +31,15 @@ export default function Dashboard(){
         setUser(userRes);
 
         const params = {
-            pageNumber: 0,
-            pageSize: 20,
+            pageNumber: currentPage - 1,
+            pageSize,
             user: user?.username
         };
 
         const scanRes = await fetchScans(params);
         setScans(scanRes.items);
+        setTotalPages(scanRes.totalPages);
+        setTotalItems(scanRes.totalItems);
       } catch (err) {
         console.error("Failed to load dashboard", err);
       } finally {
@@ -41,7 +48,11 @@ export default function Dashboard(){
     }
 
     fetchData();
-  }, []);
+  }, [currentPage]);
+
+  const onPageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const handleReport = async (id: number) => {
           try{
@@ -125,11 +136,11 @@ export default function Dashboard(){
       </Card>
 
       {/* Scan History */}
-      <Card className="lg:col-span-3">
+      <Card className="lg:col-span-3 ">
         <CardHeader>
           <CardTitle>My Scans</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 max-h-[545px] overflow-y-auto">
+        <CardContent className="space-y-3 max-h-[480px] overflow-y-auto">
         
           {scans.length === 0 ? (
             <p className="text-gray-500">No scans yet.</p>
@@ -154,7 +165,7 @@ export default function Dashboard(){
 
                 </CardContent>
                 <Separator/>
-                <CardFooter className="flex flex-row justify-between items-center">
+                <CardFooter className="flex flex-row justify-between items-center -mt-4">
                   
                     <div className="text-sm">Scanned at: {formatReadableDateTime(scan.createdAt)}</div>
                     
@@ -188,6 +199,13 @@ export default function Dashboard(){
           )}
           
         </CardContent>
+        <CardFooter>
+          <Paginator
+           totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={onPageChange}
+        />
+        </CardFooter>
       </Card>
     </div>
   );

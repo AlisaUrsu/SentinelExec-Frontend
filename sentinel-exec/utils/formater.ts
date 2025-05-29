@@ -11,11 +11,15 @@ export function formatReadableDate(
 }
 
 export function formatFileSize(bytes: number): string {
-  return Intl.NumberFormat("en-US", {
-    style: "unit",
-    unit: "byte",
-    notation: "compact",
-  }).format(bytes);
+  const units = ["bytes", "KB", "MB", "GB", "TB"];
+  let i = 0;
+
+  while (bytes >= 1024 && i < units.length - 1) {
+    bytes /= 1024;
+    i++;
+  }
+
+  return `${bytes.toFixed(2)} ${units[i]}`;
 }
 
 export function formatReadableDateTime(dateString: string): string {

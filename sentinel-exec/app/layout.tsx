@@ -22,11 +22,13 @@ export default function RootLayout({
 {
   const pathname = usePathname();
   const hideNavbar = ["/auth/login", "/auth/signup"].includes(pathname);
+  const hideShader = pathname === "/"; 
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
         {!hideNavbar && <NavBar />}
+        {!hideShader &&
         <ShaderGradientCanvas
           style={{
             position: "absolute",
@@ -74,6 +76,7 @@ export default function RootLayout({
             enableTransition={false}
           />
         </ShaderGradientCanvas>
+}
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

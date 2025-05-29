@@ -6,55 +6,125 @@ import { Badge } from "../ui/badge";
 export const columns: ColumnDef<ExecutableSummaryDTO>[] = [
   {
     accessorKey: "name",
-    header: "Name",
-    enableSorting: true,
+    header: () => (
+      <div style={{ width: 220, maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap" }}>
+        Name
+      </div>
+    ),
+    cell: ({ row }) => {
+      const name = row.original.name;
+      return (
+        <div style={{ width: 220, maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap" }} title={name}>
+        {name}
+        </div>
+      );
+    }
   },
   {
     accessorKey: "sha256",
-    header: "SHA-256",
+    header: () => (
+      <div style={{ width: 220, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        SHA-256
+      </div>
+    ),
     cell: ({ row }) => {
       const hash = row.original.sha256;
       return (
-        <span title={hash} className="truncate max-w-[200px] block">
-          {hash.slice(0, 12)}...
-        </span>
+        <div style={{ width: 220, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={hash}>
+          {hash.slice(0, 24)}...
+        </div>
       );
-  }
+    }
   },
   {
     accessorKey: "fileSize",
-    header: "File Size",
-    cell: ({ row }) => formatFileSize(row.original.fileSize),
+    header: () => (
+      <div style={{ width: 80, maxWidth: 80, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap" }}>
+        File Size
+      </div>
+    ),
+    cell: ({ row }) => {
+      const fileSize = row.original.fileSize;
+      return (
+        <div style={{ width: 80, maxWidth: 80, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap" }} title={fileSize.toString()}>
+        {formatFileSize(fileSize)}
+        </div>
+      );
+    }
+   
   },
   {
     accessorKey: "reporters",
-    header: "Reporters No."
+     header: () => (
+      <div style={{ width: 70, maxWidth: 70, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap" }}>
+        Reporters
+      </div>
+    ),
+    cell: ({ row }) => {
+      const reporters = row.original.reporters;
+      return (
+        <div style={{ width: 70, maxWidth: 70, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap", textAlign: "center" }} title={reporters.toString()}>
+       {reporters}
+        </div>
+      );
+    }
   },
   {
     accessorKey: "firstDetection",
-    header: "First Detection",
-    enableSorting: true,
-    cell: ({ row }) => formatReadableDate(row.original.firstDetection),
+     header: () => (
+      <div style={{ width: 110, maxWidth: 110, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap" }}>
+        First Detection
+      </div>
+    ),
+    cell: ({ row }) => {
+      const date = row.original.firstDetection;
+      return (
+        <div style={{ width: 110, maxWidth: 110, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap" }} title={date.toString()}>
+       {formatReadableDate(date)}
+        </div>
+      );
+    }
   },
   {
     accessorKey: "firstReport",
-    header: "First Report",
-    enableSorting: true,
-    cell: ({ row }) => formatReadableDate(row.original.firstReport),
+     header: () => (
+      <div style={{ width: 110, maxWidth: 110, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap" }}>
+        First Report
+      </div>
+    ),
+    cell: ({ row }) => {
+      const date = row.original.firstReport;
+      return (
+        <div style={{ width: 110, maxWidth: 110, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap" }} title={date.toString()}>
+       {formatReadableDate(date)}
+        </div>
+      );
+    }
   },
   {
     accessorKey: "score",
-    header: "Score",
-    enableSorting: true,
+     header: () => (
+      <div style={{ width: 50, maxWidth: 50, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap" }}>
+        Score
+      </div>
+    ),
     cell: ({ row }) => {
-      const rawScore = row.original.score;
-      const percent = (rawScore * 100).toFixed(2);
-      return `${percent}%`;
-    },
+      const score = row.original.score;
+      return (
+        <div style={{ width: 50, maxWidth: 50, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap", textAlign: "center" }} title={score.toString()}>
+       {(score*100).toFixed(2)}%
+        </div>
+      );
+    }
+
   },
   {
     accessorKey: "label",
-    header: "Label",
+   header: () => (
+      <div style={{ width: 80, maxWidth: 80, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "wrap" }}>
+        Label
+      </div>
+    ),
     cell: ({ row }) => {
       const label = row.original.label;
 
@@ -67,9 +137,11 @@ export const columns: ColumnDef<ExecutableSummaryDTO>[] = [
       };
 
       return (
-        <Badge className={`rounded-sm px-2 py-1 font-medium  ${styleMap[label] || "bg-muted text-muted-foreground"}`}>
+        <div className="flex justify-center items-center">
+        <Badge className={`rounded-sm px-2 py-1 font-medium items-center  ${styleMap[label] || "bg-muted text-muted-foreground"}`}>
           {label}
         </Badge>
+        </div>
       );
     }
 

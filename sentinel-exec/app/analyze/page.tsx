@@ -1,16 +1,19 @@
 "use client";
 
 import ExecutableUploader from "@/components/form/executable-upload";
+import CircularProgressColorDemo, { CircularProgress } from "@/components/progress-10";
 import SpinnerCircle2 from "@/components/spinner-08";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { ScanDTO } from "@/responses/scan-dto";
 import { reportScan, uploadExecutable } from "@/services/service";
 import { Scan, TriangleAlert } from "lucide-react";
 import { useState } from "react";
+import { formatFileSize, formatReadableDate } from "@/utils/formater";
 
 export default function ScanExecutablePage() {
     const [files, setFiles] = useState<File[] | null>(null);
@@ -62,17 +65,25 @@ export default function ScanExecutablePage() {
   };
 
   function getScoreStyle(score: number) {
-  if (score < 0.1) return "text-green-400";
-  if (score < 0.3) return "text-teal-400";
-  if (score < 0.5) return "text-zinc-300";
-  if (score < 0.8) return "text-orange-400";
-  return "text-red-400";
+  if (score < 0.2) return "stroke-green-600/60";
+  if (score < 0.4) return "stroke-teal-600/60";
+  if (score < 0.6) return "stroke-zinc-500/60";
+  if (score < 0.8) return "stroke-orange-700/60";
+  return "stroke-red-700/60";
 }
 
+    function getScoreTextStyle(score: number) {
+    if (score < 0.2) return "text-green-500";
+    if (score < 0.4) return "text-teal-500";
+    if (score < 0.6) return "text-zinc-400";
+    if (score < 0.8) return "text-orange-600";
+    return "text-red-600";
+    }
+
     return (
-        <div className="min-h-[calc(100vh-4rem)]  flex items-center  p">
+        <div className="min-h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] flex items-center">
             <div className="w-full  flex flex-col items-center space-y-4">
-                <Card className="p-4 min-w-[700px]">
+                <Card className="p-4 min-w-[700px] max-w-[700px]">
                     <CardHeader className="flex flex-row justify-between">
                         <div >
                         {!result && (
@@ -130,16 +141,49 @@ export default function ScanExecutablePage() {
 
                     {result && !loading && (
               <div className="space-y-4 animate-in fade-in duration-700">
-                <h2 className="text-4xl font-bold text-center -mt-6">Scan Complete</h2>
-                <p>{result.content}</p>
-                <p className="text-center">The probability of the file to be malicious is: </p>
-                <p className={`text-center text-5xl font-semibold ${getScoreStyle(result.score)}`}>
-                    {(result.score * 100).toFixed(2)}%
-                    </p>
-                <p>Therefore, this file can be considered </p>
-                <div className="text-xl font-bold">
-                   {result.label}
+                <h2 className="text-4xl font-bold text-center -mt-10">Scan Complete</h2>
+                <div className="flex justify-between gap-10 p-2">
+                    <div className="">
+                        <div className="text-l mb-4">{result.content}</div>
+                        <Separator/>
+                        <div className=" mt-4 ">
+                            <div className="text-muted-foreground text-sm mb-2">Scanned file information:</div>
+                            <div className="flex flex-wrap gap-x-2 text-base">
+                                <span>{result.executableDTO.name}</span>
+                                <Separator orientation="vertical" className="min-h-[25px] border-[1px]" />
+                                <span>{formatFileSize(result.executableDTO.fileSize)}</span>
+                                </div>
+                        </div>
+                    </div>
+
+                   
+                <div className="flex self-start items-center -mt-8">
+                    <div className="flex-col">
+                    <div className="flex justify-start drop-shadow-md animate-in fade-in">
+                    <CircularProgress
+                        value={parseFloat((result.score * 100).toFixed(2))}
+                        size={200}
+                        strokeWidth={18}
+                        showLabel
+                        labelClassName={`text-3xl  ${getScoreTextStyle(result.score)}`}
+                        renderLabel={(value) => `${value.toFixed(2)}%`}
+                        className="stroke-muted/50"
+                        progressClassName={getScoreStyle(result.score)}
+                    />
+                    </div>
+                    <div className="text-center -mt-2">
+                        <div className="text-muted-foreground text-sm ">This file is flagged as:</div>
+                        <div className={`text-3xl font-bold ${getScoreTextStyle(result.score)}`}>
+                            {result.label}
+                        </div>
+                    </div>
+                    </div>
                 </div>
+                </div>
+               
+
+                    
+                
 
                 <AlertDialog>
                 <AlertDialogTrigger asChild >
