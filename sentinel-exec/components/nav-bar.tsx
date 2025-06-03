@@ -1,14 +1,31 @@
 "use client";
 
-import { logout } from "@/services/service";
+import { getUser, logout } from "@/services/service";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@radix-ui/react-navigation-menu";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import { AvatarImage } from "@radix-ui/react-avatar";
+import { useEffect, useState } from "react";
+import { UserDto } from "@/responses/user-dto";
 
 export default function NavBar() {
     const router = useRouter();
+    const [user, setUser] = useState<UserDto | null>(null);
+
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const userData = await getUser();
+                setUser(userData);
+            } catch (err) {
+                console.error("Failed to fetch user:", err);
+            }
+        }
+
+        fetchUser();
+    }, []);
 
     function handleLogout() {
         logout();
@@ -26,6 +43,7 @@ export default function NavBar() {
     function handleDashboard() {
         router.push("/dashboard")
     }
+
 
     return (
         <div className="shadow-md shadow-neutral-950">
@@ -54,9 +72,9 @@ export default function NavBar() {
                 <NavigationMenuItem>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                        <Avatar className="rounded-full w-8 h-8 cursor-pointer">
-                            
-                            <AvatarFallback>NA</AvatarFallback>
+                        <Avatar className="rounded-full w-12 h-12 cursor-pointer">
+                            <AvatarImage src={user?.profilePicture ? `data:image/webp;base64,${user.profilePicture}` : undefined}/>
+                            <AvatarFallback>{user?.username.charAt(0)}</AvatarFallback>
                         </Avatar>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">

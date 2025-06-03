@@ -187,7 +187,7 @@ export default function ScanExecutablePage() {
 
                 <AlertDialog>
                 <AlertDialogTrigger asChild >
-                    <Button  className="w-full"  onClick={handleReport} disabled={reporting || result.reported}>
+                    <Button  className="w-full"  disabled={reporting || result.reported}>
                     Report this file
                     </Button>
                 </AlertDialogTrigger>

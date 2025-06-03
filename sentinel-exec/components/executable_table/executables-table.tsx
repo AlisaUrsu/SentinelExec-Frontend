@@ -29,7 +29,8 @@ type Props = {
   onPageChange: (currentPage: number) => void;
 };
 
-export function ExecutablesTable({ data, totalPages, currentPage, totalItems, onPageChange }: Props) {
+export function ExecutablesTable({ data, totalPages, currentPage, totalItems, onPageChange
+ }: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -51,33 +52,6 @@ export function ExecutablesTable({ data, totalPages, currentPage, totalItems, on
 
   return (
     <div>
-      <div className="flex items-center justify-between  py-4">
-        <div className="flex flex-row gap-4">
-        <Input
-          placeholder="Filter by name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-          className="max-w-sm"
-        />
-
-        <Select
-          onValueChange={(value) => table.getColumn("label")?.setFilterValue(value)}
-          value={(table.getColumn("label")?.getFilterValue() as string) ?? ""}
-        >
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Filter by label" />
-          </SelectTrigger>
-          <SelectContent>
-            {labelOptions.map((label) => (
-              <SelectItem key={label} value={label}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        </div>
-        <div className="text-sm font-semibold">Total number of reported files: {totalItems}</div>
-      </div>
 
       <Table className="w-full text-sm text-left border-collapse">
         <TableHeader>

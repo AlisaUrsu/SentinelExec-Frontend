@@ -76,11 +76,12 @@ export async function refreshToken(): Promise<boolean> {
 interface FetchExecutablesParams {
   pageNumber: number,
   pageSize: number,
-  executableName?: string
+  executableName?: string,
+  label?: string
 }
 
 export async function fetchExecutables(params: FetchExecutablesParams): Promise<PaginatedResponse<ExecutableSummaryDTO>> {
-    const { pageNumber, pageSize, executableName } = params;
+    const { pageNumber, pageSize, executableName, label } = params;
 
     const queryParams = new URLSearchParams({
         pageNumber: pageNumber.toString(),
@@ -89,6 +90,7 @@ export async function fetchExecutables(params: FetchExecutablesParams): Promise<
 
 
     if (executableName) queryParams.append("executableName", executableName);
+    if (label) queryParams.append("label", label);
 
     const endpoint = `${EXECUTABLES_URL}?${queryParams.toString()}`;
     const response = await fetchWithAuth(endpoint,

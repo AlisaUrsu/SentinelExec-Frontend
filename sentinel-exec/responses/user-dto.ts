@@ -8,4 +8,4 @@ export interface UserDto {
   uniqueExecutablesScanned: number;
   totalReports: number;
   createdAt: string;
-}
+} 

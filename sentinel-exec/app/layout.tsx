@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) 
 {
   const pathname = usePathname();
-  const hideNavbar = ["/auth/login", "/auth/signup"].includes(pathname);
+  const hideNavbar = ["/auth/login", "/auth/signup", "/auth/verify"].includes(pathname);
   const hideShader = pathname === "/"; 
 
   return (

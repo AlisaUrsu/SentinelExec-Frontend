@@ -21,7 +21,7 @@ export default function SignUpPage() {
             <div className="flex-1 flex flex-col justify-center items-center text-white p-8">
                 <h1 className="text-7xl font-semibold mb-4 font-skateblade">SentinelExec</h1>
                 <p className="text-lg text-center ">
-                    Sign up to unlock exclusive features, enjoy personalized content, and connect with a vibrant community!
+                    Sign up to secure your system, track your scans, and help build a safer digital world—one file at a time.!
                 </p>
             
             </div>

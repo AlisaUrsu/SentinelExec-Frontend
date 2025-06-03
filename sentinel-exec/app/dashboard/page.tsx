@@ -7,13 +7,16 @@ import { ScanDTO } from "@/responses/scan-dto";
 import { useEffect, useState } from "react";
 import { fetchScans, fetchWithAuth, getUser, reportScan } from "@/services/service";
 import { formatReadableDate, formatReadableDateTime } from "@/utils/formater";
-import { Divide } from "lucide-react";
+import { Divide, Trash, Trash2 } from "lucide-react";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Paginator } from "@/components/paginator";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AvatarImage } from "@radix-ui/react-avatar";
 
 export default function Dashboard(){
     const [user, setUser] = useState<UserDto | null>(null);
@@ -22,6 +25,10 @@ export default function Dashboard(){
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [nameFilter, setNameFilter] = useState('');
+  const [labelFilter, setLabelFilter] = useState('');
+  const [reportedFilter, setReportedFilter] = useState<string | null>(null);
+
   const pageSize = 5;
 
   useEffect(() => {
@@ -37,7 +44,10 @@ export default function Dashboard(){
       const scanRes = await fetchScans({
         pageNumber: currentPage - 1,
         pageSize,
-        user: userRes.username
+        user: userRes.username,
+        label: labelFilter,
+        filename: nameFilter,
+        isReported: reportedFilter === null ? undefined : reportedFilter === "true",
       });
 
       setScans(scanRes.items);
@@ -51,17 +61,28 @@ export default function Dashboard(){
   }
 
   fetchData();
-}, [currentPage]);
+}, [currentPage, labelFilter, nameFilter, reportedFilter]);
 
 
   const onPageChange = (page: number) => {
     setCurrentPage(page);
   };
 
+  const clearFilter = () => {
+    setNameFilter('');
+    setLabelFilter('');
+    setReportedFilter(null);
+  }
+
   const handleReport = async (id: number) => {
           try{
           await reportScan(id);
-
+            setScans(prev =>
+      prev.map(scan => scan.id === id ? { ...scan, reported: true } : scan)
+    );
+    setUser(prevUser =>
+      prevUser ? { ...prevUser, totalReports: prevUser.totalReports + 1 } : prevUser
+    );
           
           }
           catch(error) {
@@ -92,7 +113,7 @@ export default function Dashboard(){
 
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-7 gap-6 p-8">
+        <div className="grid grid-cols-1 md:grid-cols-7 gap-6 p-8 min-h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)]">
       {/* User Profile */}
       <Card className="lg:col-span-4">
         <CardHeader>
@@ -100,7 +121,7 @@ export default function Dashboard(){
         </CardHeader>
         <CardContent className="flex flex-col items-center space-y-4">
           <Avatar className="w-24 h-24">
-            
+             <AvatarImage src={user?.profilePicture ? `data:image/webp;base64,${user.profilePicture}` : undefined}/>
             <AvatarFallback>{user?.username.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="text-center">
@@ -144,10 +165,58 @@ export default function Dashboard(){
         <CardHeader>
           <CardTitle>My Scans</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 max-h-[480px] overflow-y-auto">
+        <CardContent className="space-y-3 max-h-[500px] overflow-y-auto -mt-8 items-center ">
+          <div className="flex flex-row gap-4 items-center justify-between py-4 -mb-4">
+            <div className="flex gap-4">
+              <Input
+              
+                placeholder="Filter by name..."
+                value={nameFilter}
+                onChange={(e) => {
+                  setNameFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+              />
+              <Select
+              
+                value={labelFilter}
+                onValueChange={(value) => {
+                  setLabelFilter(value);
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Label" />
+                </SelectTrigger>
+                <SelectContent>
+                  {["Safe", "Likely Safe", "Unknown", "Suspicious", "Malicious"].map((label) => (
+                    <SelectItem key={label} value={label}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
+                value={reportedFilter ?? ""}
+                onValueChange={(value) => {
+                  setReportedFilter(value === "" ? null : value);
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="true">Reported</SelectItem>
+                  <SelectItem value="false">Not Reported</SelectItem>
+                </SelectContent>
+              </Select>
+                <Button onClick={clearFilter} className="px-2"><Trash2/></Button>
+            </div>
+            </div>
         
           {scans.length === 0 ? (
-            <p className="text-gray-500">No scans yet.</p>
+            <div className="text-center r">No scans yet.</div>
           ) : (
             scans.map((scan) => (
               <Card key={scan.id} className=" items-center justify-between">
@@ -203,7 +272,7 @@ export default function Dashboard(){
           )}
           
         </CardContent>
-        <CardFooter>
+        <CardFooter className="pt-4 -mb-2">
           <Paginator
            totalPages={totalPages}
           currentPage={currentPage}
