@@ -3,6 +3,9 @@ The application serves as a platform for detecting and reporting potentially mal
 
 More information coming soon.
 
+- Link to backend repository: https://github.com/AlisaUrsu/SentinelExec-Backend
+- Link to model training and API repository: https://github.com/AlisaUrsu/SentinelExec_Models
+
 Some screenshots of the application:
 
 ![signup](https://github.com/user-attachments/assets/64707e3d-69b4-453a-9fdc-014d50500a7f)
