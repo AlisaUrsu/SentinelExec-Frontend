@@ -30,7 +30,7 @@ export default function ScanExecutablePage() {
             return;
         }
         if (files[0].type !== "application/x-msdownload"){
-            alert("Please select a valid .exe file");
+            alert("Please select a valid .exe or .dll file");
         }
         if (files[0].size > MAX_SIZE_BYTES) {
             alert("File size must be less than 400MB.");
@@ -102,10 +102,10 @@ export default function ScanExecutablePage() {
                     <CardContent>
                         {!result && !loading && (
                             <div>
-                            <div className="flex flex-row justify-between gap-10">
+                            <div className="flex flex-row justify-between gap-8">
                         <div>
                             <p className="font-semibold text-lg">Scan files before opening</p>
-                            <div className="max-w-xs text-sm">Whether it’s from a download site or a phishing email, executable files (.exe) 
+                            <div className="max-w-xs text-sm">Whether it’s from a download site or a phishing email, executable files (.exe) or dynamically linked libaries (.dll)
                                 can carry hidden threats, even if they look legitimate.</div>
                             <div className="max-w-xs text-sm mt-2">
                                 SentinelExec analyzes the file’s structure, including how it’s built, what resources it uses, and the patterns in its data and strings, to uncover suspicious behavior.

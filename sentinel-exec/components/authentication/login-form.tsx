@@ -66,7 +66,7 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
             }
         } catch (err) {
                 setError("root", {
-                message: "An unexpected error occurred. Please try again.",
+                message: "Invalid username or password.",
             });
             console.error(err);
         }

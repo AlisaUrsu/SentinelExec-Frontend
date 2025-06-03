@@ -32,7 +32,7 @@ const FileSvgDraw = () => {
         &nbsp; or drag and drop
       </p>
       <p className="text-xs text-gray-500 dark:text-gray-400">
-        EXE files only
+        EXE and DLL files only
       </p>
     </>
   );

@@ -54,7 +54,7 @@ export async function fetchWithAuth(input: RequestInfo, init?: RequestInit) {
   };
   init.credentials = "include";
  // to send cookies (refresh token)
-  return fetch(input, init);
+  return fetchData(input, init);
 }
 
 export async function refreshToken(): Promise<boolean> {
@@ -91,7 +91,7 @@ export async function fetchExecutables(params: FetchExecutablesParams): Promise<
     if (executableName) queryParams.append("executableName", executableName);
 
     const endpoint = `${EXECUTABLES_URL}?${queryParams.toString()}`;
-    const response = await fetchData(endpoint,
+    const response = await fetchWithAuth(endpoint,
         {
             method: "GET"
         });
@@ -123,7 +123,7 @@ export async function fetchScans(params: FetchScansParams): Promise<PaginatedRes
     if (user) queryParams.append("user", user);
 
     const endpoint = `${SCANS_URL}?${queryParams.toString()}`;
-    const response = await fetchData(endpoint,
+    const response = await fetchWithAuth(endpoint,
         {
             method: "GET"
         });
@@ -133,7 +133,7 @@ export async function fetchScans(params: FetchScansParams): Promise<PaginatedRes
 }
 
 export async function fetchExecutableById(id: number): Promise<ExecutableDTO> {
-  const response = await fetchData(`${EXECUTABLES_URL}/${id}`,
+  const response = await fetchWithAuth(`${EXECUTABLES_URL}/${id}`,
     {
       method: "GET"
     }
@@ -143,7 +143,7 @@ export async function fetchExecutableById(id: number): Promise<ExecutableDTO> {
 }
 
 
-export async function register(user: RegistrationUserDto): Promise<void> {
+export async function signup(user: RegistrationUserDto): Promise<boolean> {
   const response = await fetchData(
     `${AUTH_URL}/register`,
     {
@@ -157,12 +157,14 @@ export async function register(user: RegistrationUserDto): Promise<void> {
   const result: Result<null> = await response.json();
   if (result.flag) {
     console.log(result.message); 
+    return true;
   } else {
     console.error("Signup failed:", result.message);
   }
+  return false;
 }
 
-export async function enableUser(token: string): Promise<void> {
+export async function enableUser(token: string): Promise<boolean> {
   const response = await fetchData(
     `${AUTH_URL}/enable/${token}`,
     {
@@ -173,14 +175,16 @@ export async function enableUser(token: string): Promise<void> {
   const result: Result<null> = await response.json();
   if (result.flag) {
     console.log(result.message); 
+    return true;
   } else {
     console.error("Enable user failed:", result.message);
   }
+  return false;
 }
 
 
 export async function login(loginRequest:LoginRequest) {
-  const response = await fetch(`${AUTH_URL}/login`, {
+  const response = await fetchData(`${AUTH_URL}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -195,7 +199,7 @@ export async function login(loginRequest:LoginRequest) {
 }
 
 export async function logout(): Promise<boolean> {
-  const response = await fetch(`${AUTH_URL}/logout`, {
+  const response = await fetchData(`${AUTH_URL}/logout`, {
     method: "POST",
     credentials: "include",  // include cookies
   });

@@ -16,6 +16,8 @@ import { z } from 'zod'
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert } from "../ui/alert"
+import { RegistrationUserDto } from "@/responses/registration-user-dto";
+import { signup } from "@/services/service";
 
 export const iframeHeight = "600px"
 
@@ -51,8 +53,22 @@ export default function SignUpForm({ onNext }: SignUpFormProps) {
     });
 
     const onSubmit = async (values: SignUpFormData) => {
-        //pass the data to the page
-        onNext(values.username, values.email, values.password);
+        clearErrors();
+        const registerRequest: RegistrationUserDto = {
+            username: values.username,
+            email: values.email,
+            password: values.password,
+        };
+        
+        try {
+            const success = await signup(registerRequest);
+            if(success) {
+                onNext(values.username, values.email, values.password);
+            }
+            
+        } catch (err: any) {
+            setError("root", {message: err.message}); 
+        }
     };
     
   return (

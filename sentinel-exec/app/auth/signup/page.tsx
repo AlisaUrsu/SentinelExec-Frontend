@@ -1,29 +1,20 @@
 "use client";
 
 import SignUpForm from "@/components/authentication/sign-up-form";
-import { register } from "@/services/service";
+import { signup } from "@/services/service";
 import { useRouter } from "next/navigation";
-
-type Page1Props = {
-    onNext: (username: string, email: string, password: string) => void;
-}
 
 
 export default function SignUpPage() {
     const router = useRouter();
-    const handleNext = async (username: string, email: string, password: string) => {
-    try {
-      await register({ username, email, password });
-
-      // Pass username/email to the verify page if needed (e.g., via search params or state)
+    const handleNext =  () => {
+  
       router.push(`/auth/verify`);
-    } catch (err: any) {
-      alert(err.message); // Ideally replace this with better error UI
-    }
+    
   };
     return (
         <div className="relative min-h-screen overflow-hidden">
-      {/* Background Shader */}
+     
       
         <div className="flex min-h-screen">
 

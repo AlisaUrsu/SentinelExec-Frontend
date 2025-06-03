@@ -11,20 +11,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ShaderGradientCanvas, ShaderGradient } from "@shadergradient/react";
 import { cn } from "@/lib/utils";
 
-async function testFetchExecutables() {
-    try {
-        const params = {
-            pageNumber: 1,
-            pageSize: 10,
-        };
-        const result = await fetchExecutables(params);
-        console.log("Fetch result:", result);
-    } catch (error) {
-        console.error("Error fetching executables:", error);
-    }
-}
 
-testFetchExecutables();
 
 export default function Home() {
   const [executables, setExecutables] = useState<ExecutableSummaryDTO[]>([]);

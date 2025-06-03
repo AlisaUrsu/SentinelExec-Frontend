@@ -25,30 +25,34 @@ export default function Dashboard(){
   const pageSize = 5;
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const userRes = await getUser();
-        setUser(userRes);
+  async function fetchData() {
+    try {
+      setLoading(true);
 
-        const params = {
-            pageNumber: currentPage - 1,
-            pageSize,
-            user: user?.username
-        };
+      // First fetch user
+      const userRes = await getUser();
+      setUser(userRes);
 
-        const scanRes = await fetchScans(params);
-        setScans(scanRes.items);
-        setTotalPages(scanRes.totalPages);
-        setTotalItems(scanRes.totalItems);
-      } catch (err) {
-        console.error("Failed to load dashboard", err);
-      } finally {
-        setLoading(false);
-      }
+      // Then fetch scans using the user's username
+      const scanRes = await fetchScans({
+        pageNumber: currentPage - 1,
+        pageSize,
+        user: userRes.username
+      });
+
+      setScans(scanRes.items);
+      setTotalPages(scanRes.totalPages);
+      setTotalItems(scanRes.totalItems);
+    } catch (err) {
+      console.error("Failed to load dashboard", err);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    fetchData();
-  }, [currentPage]);
+  fetchData();
+}, [currentPage]);
+
 
   const onPageChange = (page: number) => {
     setCurrentPage(page);
