@@ -1,0 +1,12 @@
+# SentinelExec
+The application serves as a platform for detecting and reporting potentially malicious executable files using machine learning-based classification.
+
+More information coming soon.
+
+Some screenshots of the application:
+
+![signup](https://github.com/user-attachments/assets/64707e3d-69b4-453a-9fdc-014d50500a7f)
+![image](https://github.com/user-attachments/assets/d3d739f1-18b1-4c5a-9471-ea22dc0fad60)
+![scan result](https://github.com/user-attachments/assets/7c37fa4c-0ed8-43ff-8959-3da0cdc3691f)
+![profile](https://github.com/user-attachments/assets/5c6f4b60-fcb8-4adf-bd0d-cb09b193459a)
+
